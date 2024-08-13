@@ -87,3 +87,15 @@ func (u *HTTPHandler) LoginUser(c *gin.Context) {
 		"refresh_token": refreshToken,
 	}, nil)
 }
+
+func (u *HTTPHandler) AddtoCart(c *gin.Context) {
+
+}
+
+func (u *HTTPHandler) EditCart(c *gin.Context) {
+
+}
+
+func (u *HTTPHandler) RemoveItem(c *gin.Context) {
+	
+}

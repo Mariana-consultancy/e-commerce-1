@@ -47,3 +47,5 @@ func (p *Postgres) UpdateUser(user *models.User) error {
 	}
 	return nil
 }
+
+func (p *Postgres) GetAllProducts() ([])

@@ -26,3 +26,11 @@ func (p *Postgres) UpdateSeller(seller *models.Seller) error {
 	}
 	return nil
 }
+
+// Delete a user in the database
+func (p *Postgres) DeleteSeller(seller *models.Seller) error {
+	if err := p.DB.Delete(seller).Error; err != nil {
+		return err
+	}
+	return nil
+}

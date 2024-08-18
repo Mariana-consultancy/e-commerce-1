@@ -51,5 +51,12 @@ func SetupRouter(handler *api.HTTPHandler, repository ports.Repository) *gin.Eng
 		seller.POST("/logout", handler.Logout)
 	}
 
+	// Create an item route for your API
+	item := r.Group("/item")
+	{
+		// Include the API Request type, the handler and the function for the request
+		item.POST("/create", handler.CreateItem)
+	}
+
 	return router
 }

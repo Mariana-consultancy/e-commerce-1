@@ -27,6 +27,8 @@ func Initialize(dbURI string) (*gorm.DB, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Add all the API models in the AutoMigrate( ) to be migrated to the database - USE SLICES!
 	err = conn.AutoMigrate(&models.User{}, &models.Seller{}, &models.BlacklistTokens{}, &models.Item{})
 	if err != nil {
 		return nil, err

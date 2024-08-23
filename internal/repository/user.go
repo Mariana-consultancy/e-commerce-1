@@ -87,8 +87,8 @@ func (p *Postgres) DeleteProductFromCart(cart *models.Cart) error {
 	return nil
 }
 
-func (p *Postgres) GetCartByUserID(userID uint) ([]models.IndividualItemsInCart, error) {
- var cartinventory []models.IndividualItemsInCart
+func (p *Postgres) GetCartByUserID(userID uint) ([]models.Cart, error) {
+ var cartinventory []models.Cart
 
  if err := p.DB.Where("ID = ?", userID ).First(&cartinventory).Error; err != nil {
 	return nil, err
@@ -97,12 +97,4 @@ func (p *Postgres) GetCartByUserID(userID uint) ([]models.IndividualItemsInCart,
 return cartinventory, nil
 
 }
-
-func (p *Postgres) AddToCart(cart *models.Cart) error {
-	if err := p.DB.Save(cart).Error; err != nil {
-		return err
-	}
-	return nil
-}
-
 

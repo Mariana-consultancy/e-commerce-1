@@ -19,13 +19,11 @@ type Repository interface {
 	// Update Functions
 	UpdateUser(user *models.User) error
 	UpdateSeller(user *models.Seller) error
-	// Add Functions
-	AddToCart(cart *models.Cart) error
 	// Tokens
 	BlacklistToken(token *models.BlacklistTokens) error
 	TokenInBlacklist(token *string) bool
 	// Remove From Cart
 	DeleteProductFromCart(cart *models.Cart) error
 	AddToCart(cart *models.Cart) error
-GetCartByUserID(userID uint)([]models.IndividualItemsInCart, error)
+	GetCartByUserID(userID uint) ([]models.Cart, error)
 }

@@ -260,3 +260,20 @@ func (u *HTTPHandler) RemoveFromCart(c *gin.Context) {
 	// Return a success response
 	util.Response(c, "Product removed from cart", 200, nil, nil)
 }
+
+// view cart
+func (u *HTTPHandler) ViewCart(c *gin.Context) {
+	user, err := u.GetUserFromContext(c)
+	if err != nil {
+
+		util.Response(c, "invalid token", 401, err.Error(), nil)
+		return
+	}
+
+	cartinventory, err := u.Repository.GetCartByUserID(user.ID)
+	if err != nil {
+		util.Response(c, "Error Dsiplaying Cart", 500, err.Error(), nil)
+		return
+	}
+	util.Response(c, "Product added to cart", 200, cartinventory, nil)
+}

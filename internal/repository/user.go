@@ -86,3 +86,14 @@ func (p *Postgres) DeleteProductFromCart(cart *models.Cart) error {
 	}
 	return nil
 }
+
+func (p *Postgres) GetCartByUserID(userID uint) ([]models.Cart, error) {
+	var cartinventory []models.Cart
+
+	if err := p.DB.Where("ID = ?", userID).First(&cartinventory).Error; err != nil {
+		return nil, err
+
+	}
+	return cartinventory, nil
+
+}

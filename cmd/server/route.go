@@ -42,6 +42,7 @@ func SetupRouter(handler *api.HTTPHandler, repository ports.Repository) *gin.Eng
 		user.POST("/addtocart", handler.AddToCart)
 		user.PUT("/editcart", handler.EditCart)
 		user.DELETE("/removefromcart/:id", handler.RemoveFromCart)
+		user.GET("/viewcart", handler.ViewCart)
 	}
 
 	seller := r.Group("/seller")

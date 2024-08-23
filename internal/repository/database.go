@@ -15,9 +15,7 @@ type Postgres struct {
 
 // NewDB create/returns a new instance of our Database
 func NewDB(DB *gorm.DB) ports.Repository {
-	return &Postgres{
-		DB: DB,
-	}
+	return &Postgres{DB: DB}
 }
 
 // Initialize opens the database, create tables if not created and populate it if its empty and returns a DB

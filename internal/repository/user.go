@@ -71,31 +71,18 @@ func (p *Postgres) AddToCart(cart *models.Cart) error {
 	return nil
 }
 
-func (p *Postgres) GetCartByUserID(userID uint) (*models.Cart, error) {
+func (p *Postgres) GetCartItemByProductID(productID uint) (*models.Cart, error) {
 	cart := &models.Cart{}
-	if err := p.DB.Where("ID = ?", userID).First(&cart).Error; err != nil {
+
+	if err := p.DB.Where("ID = ?", productID).First(&cart).Error; err != nil {
 		return nil, err
 	}
 	return cart, nil
 }
 
-func (p *Postgres) RemoveFromCart(userID uint, productID uint) error {
-	// First, find the cart associated with the user ID
-	cart := &models.Cart{}
-	if err := p.DB.Where("user_id = ?", userID).First(&cart).Error; err != nil {
+func (p *Postgres) DeleteProductFromCart(cart *models.Cart) error {
+	if err := p.DB.Delete(cart).Error; err != nil {
 		return err
 	}
-
-	// Find the cart item to remove based on the cart ID and product ID
-	cartItem := &models.Cart{}
-	if err := p.DB.Where("cart_id = ? AND product_id = ?", cart.ID, productID).Delete(&cartItem).Error; err != nil {
-		return err
-	}
-
-	// Delete the cart item
-	if err := p.DB.Delete(cartItem).Error; err != nil {
-		return err
-	}
-
 	return nil
 }

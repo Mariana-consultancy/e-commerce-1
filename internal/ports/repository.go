@@ -12,7 +12,7 @@ type Repository interface {
 	CreateSeller(Seller *models.Seller) error
 	CreateProduct(product *models.Product) error
 	// Get Functions
-	GetCartByUserID(userID uint) (*models.Cart, error)
+	GetCartItemByProductID(productID uint) (*models.Cart, error)
 	GetUserByID(userID uint) (*models.User, error)
 	GetProductByID(productID uint) (*models.Product, error)
 	GetAllProducts() ([]models.Product, error)
@@ -25,5 +25,5 @@ type Repository interface {
 	BlacklistToken(token *models.BlacklistTokens) error
 	TokenInBlacklist(token *string) bool
 	// Remove From Cart
-	RemoveFromCart(userID uint, productID uint) error
+	DeleteProductFromCart(cart *models.Cart) error
 }

@@ -184,7 +184,7 @@ func (u *HTTPHandler) EditCart(c *gin.Context) {
 	}
 
 	// Make sure the cart exists
-	_, err = u.Repository.GetCartByUserID(user.ID)
+	shoppingCart, err := u.Repository.GetCartItemByProductID(cart.ProductID)
 	if err != nil {
 		util.Response(c, "Cart not found", 500, err.Error(), nil)
 		return
@@ -204,6 +204,8 @@ func (u *HTTPHandler) EditCart(c *gin.Context) {
 	}
 
 	cart.UserID = user.ID
+	cart.ID = shoppingCart.ID
+
 	// Add to cart db method
 	err = u.Repository.AddToCart(cart)
 	if err != nil {
@@ -216,7 +218,7 @@ func (u *HTTPHandler) EditCart(c *gin.Context) {
 // RemoveFromCart removes a product from the user's cart
 func (u *HTTPHandler) RemoveFromCart(c *gin.Context) {
 	// Authorize the user
-	user, err := u.GetUserFromContext(c)
+	_, err := u.GetUserFromContext(c)
 	if err != nil {
 		util.Response(c, "invalid token", 401, err.Error(), nil)
 		return
@@ -242,8 +244,14 @@ func (u *HTTPHandler) RemoveFromCart(c *gin.Context) {
 		return
 	}
 
+	shoppingCart, err := u.Repository.GetCartItemByProductID(uint(productID))
+	if err != nil {
+		util.Response(c, "Product not found", 404, err.Error(), nil)
+		return
+	}
+
 	// Remove the product from the cart
-	err = u.Repository.RemoveFromCart(user.ID, uint(productID))
+	err = u.Repository.DeleteProductFromCart(shoppingCart)
 	if err != nil {
 		util.Response(c, "Error removing product from cart", 500, err.Error(), nil)
 		return

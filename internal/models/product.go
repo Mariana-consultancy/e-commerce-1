@@ -12,3 +12,10 @@ type Product struct {
 	Description string  `json:"description"`
 	Status      bool    `json:"status"`
 }
+
+type Cart struct {
+	gorm.Model
+	UserID    uint `json:"user_id"`
+	ProductID uint `json:"product_id"`
+	Quantity  int  `json:"quantity"`
+}

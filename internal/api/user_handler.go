@@ -89,14 +89,14 @@ func (u *HTTPHandler) LoginUser(c *gin.Context) {
 	}, nil)
 }
 
-// View Product listing
+// View Product listing -
 func (u *HTTPHandler) GetAllProducts(c *gin.Context) {
 	_, err := u.GetUserFromContext(c)
 	if err != nil {
 		util.Response(c, "invalid token", 401, err.Error(), nil)
 		return
 	}
-	
+
 	products, err := u.Repository.GetAllProducts()
 	if err != nil {
 		util.Response(c, "Error getting products", 500, err.Error(), nil)
@@ -114,7 +114,7 @@ func (u *HTTPHandler) GetProductByID(c *gin.Context) {
 	}
 
 	productID := c.Param("id")
-	id, err:= strconv.Atoi(productID)
+	id, err := strconv.Atoi(productID)
 	if err != nil {
 		util.Response(c, "Error getting product", 500, err.Error(), nil)
 		return
@@ -125,4 +125,138 @@ func (u *HTTPHandler) GetProductByID(c *gin.Context) {
 		return
 	}
 	util.Response(c, "Success", 200, product, nil)
+}
+
+// Add to Cart
+func (u *HTTPHandler) AddToCart(c *gin.Context) {
+	// Authorisation for Cart -
+	user, err := u.GetUserFromContext(c)
+	if err != nil {
+		util.Response(c, "invalid token", 401, err.Error(), nil)
+		return
+	}
+	// Create a variable for to store the item's data using the Item model
+	var cart *models.Cart
+	// initialise err variable, binds the request data to the item struct
+	if err := c.ShouldBind(&cart); err != nil {
+		// Return an error message if there's an error
+		util.Response(c, "invalid request", 400, err.Error(), nil)
+		return
+	}
+	// Get product by ID
+	product, err := u.Repository.GetProductByID(cart.ProductID)
+	if err != nil {
+		util.Response(c, "Product not found", 401, err.Error(), nil)
+		return
+	}
+	// Check cart quantity
+	if cart.Quantity > product.Quantity {
+		util.Response(c, "Not enough products ", 400, nil, nil)
+		return
+	}
+	cart.UserID = user.ID
+	// Init an err variable connected to the repository interface the newly created item
+	err = u.Repository.AddToCart(cart)
+	// Implement an error test to see if the item was successfully created
+	if err != nil {
+		util.Response(c, "Cart not created", 500, err.Error(), nil)
+		return
+	}
+	// return a successfull message if the item was created
+	util.Response(c, "Cart created", 200, nil, nil)
+}
+
+// Edit Cart - think like a thief (break the system)
+func (u *HTTPHandler) EditCart(c *gin.Context) {
+	// Authorisation for Cart -
+	user, err := u.GetUserFromContext(c)
+	if err != nil {
+		util.Response(c, "invalid token", 401, err.Error(), nil)
+		return
+	}
+	// Request Body
+	var cart *models.Cart
+	err = c.ShouldBind(&cart)
+	if err != nil {
+		// Return an error message if there's an error
+		util.Response(c, "invalid request", 400, err.Error(), nil)
+		return
+	}
+
+	// Make sure the cart exists
+	shoppingCart, err := u.Repository.GetCartItemByProductID(cart.ProductID)
+	if err != nil {
+		util.Response(c, "Cart not found", 500, err.Error(), nil)
+		return
+	}
+
+	// Ensure product exist
+	product, err := u.Repository.GetProductByID(cart.ProductID)
+	if err != nil {
+		util.Response(c, "Product not found", 500, err.Error(), nil)
+		return
+	}
+
+	// Check cart quantity
+	if cart.Quantity > product.Quantity {
+		util.Response(c, "Not enough products ", 400, nil, nil)
+		return
+	}
+
+	cart.UserID = user.ID
+	cart.ID = shoppingCart.ID
+
+	// Add to cart db method
+	err = u.Repository.AddToCart(cart)
+	if err != nil {
+		util.Response(c, "Error editing product quantity", 500, err.Error(), nil)
+		return
+	}
+	util.Response(c, "Product quantity edited ", 200, nil, nil)
+}
+
+// RemoveFromCart removes a product from the user's cart
+func (u *HTTPHandler) RemoveFromCart(c *gin.Context) {
+	// Authorize the user
+	_, err := u.GetUserFromContext(c)
+	if err != nil {
+		util.Response(c, "invalid token", 401, err.Error(), nil)
+		return
+	}
+
+	var cart *models.Cart
+	// initialise err variable, binds the request data to the item struct
+	if err := c.ShouldBind(&cart); err != nil {
+		// Return an error message if there's an error
+		util.Response(c, "invalid request", 400, err.Error(), nil)
+		return
+	}
+
+	// Get the product ID from the URL parameters
+	productIDParam := c.Param("id")
+	if productIDParam == "" {
+		util.Response(c, "Product ID is required", 400, nil, nil)
+		return
+	}
+	productID, err := strconv.Atoi(productIDParam)
+	if err != nil {
+		util.Response(c, "invalid product ID", 400, err.Error(), nil)
+		return
+	}
+
+	shoppingCart, err := u.Repository.GetCartItemByProductID(uint(productID))
+	if err != nil {
+		util.Response(c, "Product not found", 404, err.Error(), nil)
+		return
+	}
+
+	// Remove the product from the cart
+	err = u.Repository.DeleteProductFromCart(shoppingCart)
+	if err != nil {
+		util.Response(c, "Error removing product from cart", 500, err.Error(), nil)
+		return
+	}
+
+	// Return a success response
+	util.Response(c, "Product removed from cart", 200, nil, nil)
 }

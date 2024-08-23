@@ -40,6 +40,9 @@ func SetupRouter(handler *api.HTTPHandler, repository ports.Repository) *gin.Eng
 		user.GET("/allproducts", handler.GetAllProducts)
 		user.GET("/product/:id", handler.GetProductByID)
 		user.POST("/addtocart", handler.AddToCart)
+		user.PUT("/editcart", handler.EditCart)
+		user.DELETE("/removefromcart/:id", handler.RemoveFromCart)
+		user.POST("/addtocart", handler.AddToCart)
 		user.GET("/viewcart", handler.ViewCart)
 	}
 

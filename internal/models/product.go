@@ -15,16 +15,7 @@ type Product struct {
 
 type Cart struct {
 	gorm.Model
-	Quantity  int  `json:"quantity"`
-	ProductID uint `json:"product_id"`
 	UserID    uint `json:"user_id"`
-}
-
-type IndividualItemsInCart struct {
-	gorm.Model
-	Quantity  int  `json:"quantity"`
 	ProductID uint `json:"product_id"`
-	UserID    uint `json:"user_id"`
-
-
+	Quantity  int  `json:"quantity"`
 }

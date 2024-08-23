@@ -42,7 +42,6 @@ func SetupRouter(handler *api.HTTPHandler, repository ports.Repository) *gin.Eng
 		user.POST("/addtocart", handler.AddToCart)
 		user.PUT("/editcart", handler.EditCart)
 		user.DELETE("/removefromcart/:id", handler.RemoveFromCart)
-		user.POST("/addtocart", handler.AddToCart)
 		user.GET("/viewcart", handler.ViewCart)
 	}
 
@@ -57,7 +56,7 @@ func SetupRouter(handler *api.HTTPHandler, repository ports.Repository) *gin.Eng
 	{
 		seller.POST("/logout", handler.Logout)
 		seller.POST("/createproduct", handler.CreateProduct)
-	}      
+	}
 
 	return router
 }

@@ -94,6 +94,7 @@ func (u *HTTPHandler) LoginSeller(c *gin.Context) {
 	}, nil)
 }
 
+// Create Product
 func (u *HTTPHandler) CreateProduct(c *gin.Context) {
 	seller, err := u.GetSellerFromContext(c)
 	if err != nil {

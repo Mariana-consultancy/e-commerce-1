@@ -31,7 +31,6 @@ func (p *Postgres) GetUserByID(userID uint) (*models.User, error) {
 	return user, nil
 }
 
-// Create a user in the database
 func (p *Postgres) CreateUser(user *models.User) error {
 	if err := p.DB.Create(user).Error; err != nil {
 		return err
@@ -40,7 +39,6 @@ func (p *Postgres) CreateUser(user *models.User) error {
 	return nil
 }
 
-// Update a user in the database
 func (p *Postgres) UpdateUser(user *models.User) error {
 	if err := p.DB.Save(user).Error; err != nil {
 		return err
@@ -64,4 +62,40 @@ func (p *Postgres) GetAllProducts() ([]models.Product, error) {
 		return nil, err
 	}
 	return products, nil
+}
+
+func (p *Postgres) AddToCart(cart *models.Cart) error {
+	if err := p.DB.Save(cart).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *Postgres) GetCartByUserID(userID uint) (*models.Cart, error) {
+	cart := &models.Cart{}
+	if err := p.DB.Where("ID = ?", userID).First(&cart).Error; err != nil {
+		return nil, err
+	}
+	return cart, nil
+}
+
+func (p *Postgres) RemoveFromCart(userID uint, productID uint) error {
+	// First, find the cart associated with the user ID
+	cart := &models.Cart{}
+	if err := p.DB.Where("user_id = ?", userID).First(&cart).Error; err != nil {
+		return err
+	}
+
+	// Find the cart item to remove based on the cart ID and product ID
+	cartItem := &models.Cart{}
+	if err := p.DB.Where("cart_id = ? AND product_id = ?", cart.ID, productID).Delete(&cartItem).Error; err != nil {
+		return err
+	}
+
+	// Delete the cart item
+	if err := p.DB.Delete(cartItem).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

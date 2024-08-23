@@ -126,3 +126,65 @@ func (u *HTTPHandler) GetProductByID(c *gin.Context) {
 	}
 	util.Response(c, "Success", 200, product, nil)
 }
+
+// add to cart 
+func (u *HTTPHandler) AddToCart(c *gin.Context) {
+user, err := u.GetUserFromContext(c)
+	if err !=nil{
+	
+		util.Response(c, "invalid token", 401, err.Error(),nil)
+		return
+	}
+ 
+	var cart *models.Cart
+	
+		if err := c.ShouldBind(&cart); err != nil {
+		
+			util.Response(c, "invalid request", 400, err.Error(), nil)
+			return
+		}
+	
+		product, err := u.Repository.GetProductByID(cart.ProductID)
+		if err != nil {
+			util.Response(c, "Product not found", 401, err.Error(), nil)
+			return
+		}
+		
+		if cart.Quantity > product.Quantity {
+			util.Response(c, "Not enough products ", 400, nil, nil)
+			return
+		}
+		cart.UserID = user.ID
+		
+		err = u.Repository.AddToCart(cart)
+		
+		if err != nil {
+			util.Response(c, "Cart not created", 500, err.Error(), nil)
+			return
+		}
+		
+		util.Response(c, "Cart created", 200, nil, nil)
+	}
+
+
+
+// view cart 
+
+func (u *HTTPHandler) ViewCart(c *gin.Context) {
+	user, err := u.GetUserFromContext(c)
+	if err !=nil{
+
+
+
+		util.Response(c, "invalid token", 401, err.Error(), nil)
+		return
+	}
+
+		cartinventory, err := u.Repository.GetCartByUserID(user.ID)
+		if err != nil {
+			util.Response(c, "Error Dsiplaying Cart", 500, err.Error(), nil)
+			return
+		}
+  util.Response(c, "Product added to cart", 200, cartinventory, nil)
+}
+

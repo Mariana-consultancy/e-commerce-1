@@ -65,3 +65,23 @@ func (p *Postgres) GetAllProducts() ([]models.Product, error) {
 	}
 	return products, nil
 }
+
+func (p *Postgres) GetCartByUserID(userID uint) ([]models.IndividualItemsInCart, error) {
+ var cartinventory []models.IndividualItemsInCart
+
+ if err := p.DB.Where("ID = ?", userID ).First(&cartinventory).Error; err != nil {
+	return nil, err
+
+}
+return cartinventory, nil
+
+}
+
+func (p *Postgres) AddToCart(cart *models.Cart) error {
+	if err := p.DB.Save(cart).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+

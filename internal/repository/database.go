@@ -15,9 +15,7 @@ type Postgres struct {
 
 // NewDB create/returns a new instance of our Database
 func NewDB(DB *gorm.DB) ports.Repository {
-	return &Postgres{
-		DB: DB,
-	}
+	return &Postgres{ DB: DB,}
 }
 
 // Initialize opens the database, create tables if not created and populate it if its empty and returns a DB
@@ -27,7 +25,7 @@ func Initialize(dbURI string) (*gorm.DB, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = conn.AutoMigrate(&models.User{}, &models.Seller{}, &models.BlacklistTokens{}, &models.Product{})
+	err = conn.AutoMigrate(&models.User{}, &models.Seller{}, &models.BlacklistTokens{}, &models.Product{}, &models.Cart{}, &models.IndividualItemsInCart{})
 	if err != nil {
 		return nil, err
 	}

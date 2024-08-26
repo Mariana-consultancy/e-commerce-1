@@ -19,6 +19,12 @@ func main() {
 	server.Run(db, env.Port)
 }
 
+// application
+
+// database
+
+// Create   Read    Update   Delete
+
 //HTTP Methods
 //C = Create : storing information/data in the backend  e.g sign up, create a bank account etc [POST] [Request Body]
 //R = Read	  : getting information/data from the backend e.g viewing profiles [GET] Params [query parameter and path parameter]

@@ -5,6 +5,7 @@ import (
 	"e-commerce/internal/models"
 	"e-commerce/internal/util"
 	"os"
+	"strconv"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -88,7 +89,55 @@ func (u *HTTPHandler) LoginUser(c *gin.Context) {
 	}, nil)
 }
 
+// View Product listing
+func (u *HTTPHandler) GetAllProducts(c *gin.Context) {
+	_, err := u.GetUserFromContext(c)
+	if err != nil {
+		util.Response(c, "invalid token", 401, err.Error(), nil)
+		return
+	}
+	
+	products, err := u.Repository.GetAllProducts()
+	if err != nil {
+		util.Response(c, "Error getting products", 500, err.Error(), nil)
+		return
+	}
+	util.Response(c, "Success", 200, products, nil)
+}
+
+// View Product by ID
+func (u *HTTPHandler) GetProductByID(c *gin.Context) {
+	_, err := u.GetUserFromContext(c)
+	if err != nil {
+		util.Response(c, "invalid token", 401, err.Error(), nil)
+		return
+	}
+
+	productID := c.Param("id")
+	id, err:= strconv.Atoi(productID)
+	if err != nil {
+		util.Response(c, "Error getting product", 500, err.Error(), nil)
+		return
+	}
+	product, err := u.Repository.GetProductByID(uint(id))
+	if err != nil {
+		util.Response(c, "Error getting product", 500, err.Error(), nil)
+		return
+	}
+	util.Response(c, "Success", 200, product, nil)
+}
+
 func (u *HTTPHandler) AddtoCart(c *gin.Context) {
+
+	_, err := u.GetUserFromContext(c)
+	if err != nil {
+		util.Response(c, "invalid token", 401, err.Error(), nil)
+		return
+	}
+
+	
+
+	
 
 }
 

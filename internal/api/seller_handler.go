@@ -94,8 +94,7 @@ func (u *HTTPHandler) LoginSeller(c *gin.Context) {
 	}, nil)
 }
 
-
-func(u *HTTPHandler) CreateProduct(c *gin.Context){
+func (u *HTTPHandler) CreateProduct(c *gin.Context) {
 	seller, err := u.GetSellerFromContext(c)
 	if err != nil {
 		util.Response(c, "invalid token", 401, err.Error(), nil)
@@ -114,7 +113,9 @@ func(u *HTTPHandler) CreateProduct(c *gin.Context){
 	err = u.Repository.CreateProduct(product)
 	if err != nil {
 		util.Response(c, "product not created", 500, err.Error(), nil)
+		return
 	}
 
-	util.Response(c, "product cearted successfully", 201, nil, nil)
+	util.Response(c, "product created successfully", 201, nil, nil)
+
 }

@@ -11,11 +11,7 @@ type Product struct {
 	Quantity    int     `json:"quantity"`
 	Description string  `json:"description"`
 	Status      bool    `json:"status"`
+	Orders      []Order `json:"orders" gorm:"many2many:order_items;"`
 }
 
-type Cart struct {
-	gorm.Model
-	UserID    uint `json:"user_id"`
-	ProductID uint `json:"product_id"`
-	Quantity  int  `json:"quantity"`
-}
+

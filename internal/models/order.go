@@ -7,7 +7,7 @@ type Order struct {
 	UserID uint        `json:"user_id"`
 	Items  []OrderItem `json:"items"`
 	Total  float64     `json:"total"`
-	Status string      `json:"status"`
+	Status OrderStatus `json:"status"`
 }
 
 type OrderItem struct {
@@ -17,3 +17,11 @@ type OrderItem struct {
 	Quantity  int     `json:"quantity"`
 	Product   Product `json:"product"`
 }
+
+type OrderStatus string
+
+const (
+	PLACED   OrderStatus = "PLACED"
+	ACCEPTED OrderStatus = "ACCEPTED"
+	DECLINED OrderStatus = "DECLINED"
+)

@@ -97,3 +97,12 @@ func (p *Postgres) GetCartByUserID(userID uint) ([]models.Cart, error) {
 	return cartinventory, nil
 
 }
+
+func (p *Postgres) GetOrderItemsByOrderID(orderID uint) ([]*models.OrderItem, error) {
+	var orderDetails []*models.OrderItem
+
+	if err := p.DB.Preload("Product").Where("order_id = ?", orderID).Find(&orderDetails).Error; err != nil {
+		return nil, err
+	}
+	return orderDetails, nil
+}

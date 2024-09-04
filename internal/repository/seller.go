@@ -34,3 +34,19 @@ func (p *Postgres) CreateProduct(product *models.Product) error {
 	}
 	return nil
 }
+
+func (p *Postgres) GetOrderByID(orderID uint) (*models.Order, error) {
+	order := &models.Order{}
+
+	if err := p.DB.Where("id = ?", orderID).First(&order).Error; err != nil {
+		return nil, err
+	}
+	return order, nil
+}
+
+func (p *Postgres) UpdateOrder(order *models.Order) error {
+	if err := p.DB.Save(order).Error; err != nil {
+		return err
+	}
+	return nil
+}

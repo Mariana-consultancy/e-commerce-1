@@ -2,6 +2,7 @@ package util
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -28,4 +29,12 @@ func HashPassword(password string) (string, error) {
 		return "", err
 	}
 	return string(hashedPassword), nil
+}
+
+func ConvertStringToUint(s string) (uint, error) {
+	int, err := strconv.Atoi(s)
+	if err != nil {
+		return 0, err
+	}
+	return uint(int), nil
 }

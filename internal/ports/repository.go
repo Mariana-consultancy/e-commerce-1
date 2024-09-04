@@ -26,4 +26,7 @@ type Repository interface {
 	DeleteProductFromCart(cart *models.Cart) error
 	AddToCart(cart *models.Cart) error
 	GetCartByUserID(userID uint) ([]models.Cart, error)
+	GetOrderByID(orderID uint) (*models.Order, error)
+	UpdateOrder(order *models.Order) error
+	GetOrderItemsByOrderID(orderID uint) ([]*models.OrderItem, error)
 }
